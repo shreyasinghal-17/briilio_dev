@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Detection</title>
+</head>
+<body>
+    <h1>SQL Injection Detection</h1>
+    <label for="userInput">Enter a query:</label>
+    <form id="predictionForm">
+        <input type="text" name="user_input" id="userInput" />
+        <button type="button" onclick="predict()">Predict</button>
+    </form>
+    <p id="predictionResult"></p>
+
+    <script>
+        function predict() {
+            var userInput = document.getElementById('userInput').value;
+
+            // Send user input to the backend for prediction
+            fetch('http://localhost:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'user_input=' + encodeURIComponent(userInput),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update the prediction result on the webpage
+                document.getElementById('predictionResult').innerText = 'Result: ' + data.result;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
